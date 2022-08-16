@@ -32,5 +32,11 @@ const UsuarioSchema = Schema({
     }
 });
 
+// Sobreescribo el metodo toJSON para sacar del objeto toObject dos atributos que no quiero ver en la respuesta de la ruta
+UsuarioSchema.methods.toJSON = function() {
+    const {__v, password, ...usuario} = this.toObject();
+    return usuario;
+}
+
 // Recibe el nombre de la coleccion y el schema
 module.exports = model('Usuario', UsuarioSchema)
