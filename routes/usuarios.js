@@ -1,7 +1,11 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { validarCampos } = require('../middlewares/validar-campos');
+const { validarCampos,
+        validarJWT,
+        adminUser,
+        tieneRol } = require('../middlewares');
+
 const { roleValido, emailExiste, usuarioExiste } = require('../helpers/db-validators');
 const { getUsuarios,
         postUsuarios,
@@ -29,6 +33,9 @@ router.put('/:id',[
 ], putUsuarios);
 
 router.delete('/:id',[
+    validarJWT,
+    adminUser,
+    // tieneRol('ADMIN_ROLE', 'VENTAS_ROLE') adminUser es solo para un rol y tieneRol para varios roles
     check('id', 'No es un id valido').isMongoId(),
     check('id').custom( usuarioExiste ),
     validarCampos
