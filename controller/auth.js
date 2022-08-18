@@ -36,10 +36,16 @@ const login = async(req = request, res = response) => {
         console.log(error);
         res.status(500).json({msj: 'Algo salio mal'});
     }
+}
 
+const googleSignIn = async(req = request, res = response) => {
+    
+    const {id_token} = req.body;
 
+    res.json({id_token});
 }
 
 module.exports = {
-    login
+    login,
+    googleSignIn
 }
