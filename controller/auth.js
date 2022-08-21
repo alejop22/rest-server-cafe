@@ -44,11 +44,43 @@ const googleSignIn = async(req = request, res = response) => {
     const {id_token} = req.body;
 
     try {
-        
-        const googleUser = await googleVerify(id_token);
-        res.json({googleUser});
-        
+        const {name: nombre, email: correo, picture: img} = await googleVerify(id_token);
+
+        let usuario = await Usuario.findOne({correo});
+
+        // Crear el usuario si no existe
+        if (!usuario) {
+            const data = {
+                nombre,
+                correo,
+                password: ':P',
+                img,
+                google: true
+            }
+
+            usuario = new Usuario(data);
+
+            // Encriptacion de contraseña
+            const salt = bcryptjs.genSaltSync();
+            usuario.password = bcryptjs.hashSync(data.password, salt);
+
+            await usuario.save();
+        }
+
+        // Error si el usuario esta inhabilitado
+        if(!usuario.estado) {
+            res.status(401).json({
+                msj: `El usuario ${correo} esta inhabilitado`
+            });
+        }
+
+        // Generar el JWT
+        const token = await generarJWT(usuario.id);
+
+        res.json({usuario, token});
+
     } catch (error) {
+        console.log(error);
         res.status(400).json({
             ok: false,
             msj: 'El token no se pudo verificar'
