@@ -76,7 +76,7 @@ const actualizarCategoria = async(req = request, res = response) => {
     const nombre = req.body.nombre.toUpperCase();
 
     try {     
-        const categoria = await Categoria.findByIdAndUpdate(id, {nombre}).populate('usuario');
+        const categoria = await Categoria.findByIdAndUpdate(id, {nombre}, {new: true}).populate('usuario', 'nombre');
     
         res.json(categoria);
     } catch (error) {
@@ -91,7 +91,7 @@ const borrarCategoria = async(req = request, res = response) => {
     const { id } = req.params;
 
     try {
-        const categoria = await Categoria.findByIdAndUpdate(id, {estado: false}).populate('usuario');
+        const categoria = await Categoria.findByIdAndUpdate(id, {estado: false}, {new: true}).populate('usuario');
     
         res.json(categoria);
     } catch (error) {

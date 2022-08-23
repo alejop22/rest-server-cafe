@@ -12,7 +12,7 @@ const CategoriaSchema = Schema({
     usuario: {
         type: Schema.Types.ObjectId,
         ref: 'Usuario',
-        require: true
+        required: true
     }
 });
 
